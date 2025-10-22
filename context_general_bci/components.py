@@ -517,8 +517,11 @@ class TemporalRotaryEmbedding(RotaryEmbedding):
         pos_idx_in_fp32=True,
         device=None,
     ):
-        # Fix: newer rotary-embedding-torch doesn't accept 'device' parameter
+        # Fix: flash-attn RotaryEmbedding has inconsistent device parameter handling
+        # We accept device parameter for compatibility but don't pass it to parent
         super().__init__(dim, base, interleaved, scale_base, pos_idx_in_fp32)
+        # Store device for later use in cache updates
+        self._device = device
         # Update the cache to a tensor for compile?
         # self._seq_len_cached = torch.tensor([0], dtype=int, device=device)
 
@@ -734,7 +737,7 @@ class TemporalMHA(MHA):
             base=rotary_emb_base,
             scale_base=rotary_emb_scale_base,
             interleaved=rotary_emb_interleaved,
-            # device=device,  # Removed for compatibility with rotary-embedding-torch >= 0.6
+            device=device,
         )
         self.use_qk_norm = use_qk_norm
         if self.use_qk_norm:

@@ -529,7 +529,8 @@ class TemporalRotaryEmbedding(RotaryEmbedding):
         # Override parent's _compute_inv_freq to handle device parameter correctly
         # Parent class in newer flash-attn treats device as bool, causing TypeError
         import torch
-        if device is None or device is False:
+        # Handle all invalid device types (bool, None, etc.)
+        if not isinstance(device, (str, torch.device)):
             device = self.inv_freq.device if hasattr(self, 'inv_freq') else 'cpu'
         return 1.0 / (
             self.base

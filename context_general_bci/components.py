@@ -524,6 +524,17 @@ class TemporalRotaryEmbedding(RotaryEmbedding):
         self._device = device
         # Update the cache to a tensor for compile?
         # self._seq_len_cached = torch.tensor([0], dtype=int, device=device)
+    
+    def _compute_inv_freq(self, device=None):
+        # Override parent's _compute_inv_freq to handle device parameter correctly
+        # Parent class in newer flash-attn treats device as bool, causing TypeError
+        import torch
+        if device is None or device is False:
+            device = self.inv_freq.device if hasattr(self, 'inv_freq') else 'cpu'
+        return 1.0 / (
+            self.base
+            ** (torch.arange(0, self.dim, 2, device=device, dtype=torch.float32) / self.dim)
+        )
 
     def _update_cos_sin_cache(self, seqlen: int, device=None, dtype=None):
         # Reset the tables if the sequence length has changed,

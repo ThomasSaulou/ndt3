@@ -31,15 +31,26 @@ echo ""
 echo "📚 Installing dependencies..."
 pip install -q -r requirements.txt
 
-# 5. Force NumPy < 2.0 (some packages may have upgraded it)
-echo ""
-echo "🔧 Ensuring NumPy < 2.0..."
-pip install -q "numpy<2.0" --force-reinstall --no-deps
-
-# 6. Install NDT3
+# 5. Install NDT3 (without dependencies, we already installed them)
 echo ""
 echo "📦 Installing NDT3..."
-pip install -q -e .
+pip install -q -e . --no-deps
+
+# 6. CRITICAL: Force NumPy < 2.0 AFTER everything (some packages try to upgrade it)
+echo ""
+echo "🔧 FORCING NumPy < 2.0 (critical for binary compatibility)..."
+pip install -q "numpy<2.0" --force-reinstall --no-deps
+
+# 7. Verify NumPy version
+echo ""
+NUMPY_VERSION=$(python -c "import numpy; print(numpy.__version__)")
+echo "✓ Final NumPy version: $NUMPY_VERSION"
+
+if [[ "$NUMPY_VERSION" == 2.* ]]; then
+    echo "⚠️  WARNING: NumPy 2.x detected! Forcing downgrade..."
+    pip uninstall -y numpy
+    pip install -q "numpy==1.26.4"
+fi
 
 echo ""
 echo "================================================"

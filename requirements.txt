@@ -1,0 +1,49 @@
+# NDT3 Dependencies - Compatible with Python 3.10-3.12
+# Install PyTorch first, then flash-attn, then the rest
+
+# Core ML frameworks
+torch>=2.0.0
+torchvision>=0.15.0
+numpy<2.0  # Critical: NumPy 2.x causes binary incompatibility
+lightning>=2.0
+
+# Data processing
+seaborn
+pandas
+scipy
+mat73
+dacite
+
+# ML utilities
+einops
+scikit-learn
+timm
+transformers<4.50
+peft
+ordered-enum
+
+# BCI/Neural specific
+pyrtma
+pynwb
+falcon-challenge
+
+# Configuration
+hydra-core
+yacs
+ruamel.yaml
+
+# Utilities
+wandb
+gdown
+packaging
+ninja
+sentencepiece
+edit-distance
+tensordict>=0.3.0
+
+# Attention mechanisms
+rotary-embedding-torch  # Note: compatibility fix applied in components.py for recent versions
+
+# Flash Attention (install separately with --no-build-isolation)
+# flash-attn>=2.3.0
+

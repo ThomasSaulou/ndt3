@@ -17,11 +17,11 @@ setup(
     py_modules=['context_general_bci'],
 
     install_requires=[
-        'torch==2.1.0+cu118', # 2.0 onnx export doesn't work, install with --extra-index-url https://download.pytorch.org/whl/cu117
-        'torchvision==0.16.0+cu118', # For flash-attn compat
+        'torch>=2.0.0',  # Compatible with modern Python versions
+        'torchvision>=0.15.0',
         'seaborn',
         'pandas',
-        'numpy',
+        'numpy<2.0',  # NumPy 2.x causes binary incompatibility issues
         'scipy',
         # 'onnxruntime-gpu',
         'pyrtma',
@@ -31,27 +31,24 @@ setup(
         'argparse',
         'wandb',
         'einops',
-        'lightning',
+        'lightning>=2.0',
         'scikit-learn',
         'ordered-enum',
         'mat73',
         'dacite',
         'gdown',
         'timm',
-        'pyrtma', # For realtime Pitt infra
-        'transformers', # Flash Attn
+        'transformers<4.50',  # Flash Attn compatibility
         'peft',
-        'packaging', # Flash Attn https://github.com/Dao-AILab/flash-attention
+        'packaging',  # Flash Attn https://github.com/Dao-AILab/flash-attention
         'ninja',
-        'rotary-embedding-torch', # https://github.com/lucidrains/rotary-embedding-torch
-        'sentencepiece', # Flash Attn
+        'rotary-embedding-torch',  # https://github.com/lucidrains/rotary-embedding-torch - compatibility fix in components.py
+        'sentencepiece',  # Flash Attn
         'edit-distance',
         'falcon-challenge',
         'ruamel.yaml',
         'tensordict>=0.3.0',
         # 'flash-attn', # install following build instructions on https://github.com/Dao-AILab/flash-attention
-        # Add nvcc corresponding to torch (module system on cluster, cuda/11.8)
-        # -- export CUDA_HOME=/ihome/crc/install/cuda/11.8
         # pip install flash-attn --no-build-isolation
     ],
 )

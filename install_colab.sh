@@ -1,0 +1,51 @@
+#!/bin/bash
+# NDT3 Installation Script for Google Colab
+# This script installs NDT3 with all dependencies in the correct order
+
+set -e  # Exit on error
+
+echo "================================================"
+echo "NDT3 Installation for Google Colab"
+echo "================================================"
+
+# 1. Install NumPy first (critical for binary compatibility)
+echo ""
+echo "📦 Installing NumPy < 2.0..."
+pip install -q "numpy<2.0"
+
+# 2. Install PyTorch (keep Colab's version if available)
+echo ""
+echo "🔥 Checking PyTorch..."
+python -c "import torch; print(f'PyTorch {torch.__version__} already installed')" 2>/dev/null || {
+    echo "Installing PyTorch..."
+    pip install -q torch torchvision
+}
+
+# 3. Install Flash Attention
+echo ""
+echo "⚡ Installing Flash Attention..."
+pip install -q flash-attn --no-build-isolation
+
+# 4. Install other dependencies
+echo ""
+echo "📚 Installing dependencies..."
+pip install -q -r requirements.txt
+
+# 5. Force NumPy < 2.0 (some packages may have upgraded it)
+echo ""
+echo "🔧 Ensuring NumPy < 2.0..."
+pip install -q "numpy<2.0" --force-reinstall --no-deps
+
+# 6. Install NDT3
+echo ""
+echo "📦 Installing NDT3..."
+pip install -q -e .
+
+echo ""
+echo "================================================"
+echo "✅ Installation complete!"
+echo "================================================"
+echo ""
+echo "Verify installation:"
+echo "  python -c 'from context_general_bci.model import load_from_checkpoint; print(\"✓ NDT3 OK\")'"
+
